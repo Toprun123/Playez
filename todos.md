@@ -1,8 +1,8 @@
 # todos
 
-- [X] Create logo small
-- [X] Create logo large
-- [X] Create banner image
+- [X] Create logo small - ligt, dark
+- [X] Create logo large - ligt, dark
+- [X] Create banner image - ligt, dark
 - [ ] Create `layout.html`
 - [ ] Create `index.html`
 
