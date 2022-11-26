@@ -6,9 +6,9 @@
 - [Whats there in each file](#whats-there-in-each-file)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/playez/static/banner_dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="/playez/static/banner_light.svg">
-  <img alt="Playez - play any game from anywhere" src="/playez/static/banner.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="/playez/static/playez/images/dark/banner.svg">
+  <source media="(prefers-color-scheme: light)" srcset="/playez/static/playez/images/light/banner.svg">
+  <img alt="Playez - play any game from anywhere" src="/playez/static/playez/images/light/banner.svg">
 </picture>
 
 ---

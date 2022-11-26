@@ -8,6 +8,11 @@
         <title>{% block title %}Playez{% endblock %}</title>
     </head>
     <body>
+        <header>
+            Playez
+            {% block header %}
+            {% endblock %}
+        </header>
         {% block body %}
         {% endblock %}
     </body>

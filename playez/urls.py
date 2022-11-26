@@ -5,5 +5,5 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("favicon.ico", RedirectView.as_view(url='/static/playez/favicon.ico'), name="favicon")
+    path("favicon.ico", RedirectView.as_view(url='/static/playez/images/icons/favicon.ico'), name="favicon")
 ]
