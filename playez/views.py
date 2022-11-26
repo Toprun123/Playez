@@ -6,9 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import *
 
-import json
-
 # Create your views here.
 
 def index(request):
-    return HttpResponse('hello')
+    return render(request, 'playez/index.html')
