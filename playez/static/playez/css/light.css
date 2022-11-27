@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+@media (prefers-color-scheme: light){
+    body {
+        background-color: var(--bg-light);
+        color: var(--primary-light);
+    }
+
+    .header {
+        background-color: var(--secondary-light);
+    }
+}

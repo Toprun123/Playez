@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+body, html {
+    margin: 0px;
+    font-family: 'ubuntu';
+}
+
+h1 {
+    margin: 0px;
+}
+
+.header {
+    display: flex;
+    height: 70px;
+    padding: 5px;
+}
+
+.logo-image {
+    height: 70px;
+}
+
+.main {
+    padding: 20px;
+}
