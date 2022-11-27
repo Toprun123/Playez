@@ -3,8 +3,10 @@
 - [X] Create logo small - ligt, dark
 - [X] Create logo large - ligt, dark
 - [X] Create banner image - ligt, dark
-- [ ] Create `layout.html`
-- [ ] Create `index.html`
+- [X] Create `layout.html`
+- [X] Create `index.html`
+- [X] Create db
+- [ ] Create basic styling
 
 # Features to make
 
@@ -15,5 +17,5 @@
 | Model name | Usage                      | Number of fields                    | Made? |
 | :--------- | :------------------------- | :---------------------------------- | :---- |
 | User       | Store data about the users | inherited from class `AbstractUser` | Yes   |
-| Games      | Store data about games     | IDK                                 | No    |
+| Games      | Store data about games     | 3                                   | No    |
 
