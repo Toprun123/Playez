@@ -9,11 +9,22 @@
         <title>{% block title %}Playez{% endblock %}</title>
     </head>
     <body>
-        <header>
-            Playez
+        <div class="header">
+            <div class="header-logo">
+                <picture>
+                    <source media="(prefers-color-scheme: dark) and (min-width: 800px)" srcset="{% static '/playez/images/dark/lg_logo.svg' %}">
+                    <source media="(prefers-color-scheme: dark) and (max-width: 800px)" srcset="{% static '/playez/images/dark/sm_logo.svg' %}">
+                    <source media="(prefers-color-scheme: light) and (min-width: 800px)" srcset="{% static '/playez/images/light/lg_logo.svg' %}">
+                    <source media="(prefers-color-scheme: light) and (max-width: 800px)" srcset="{% static '/playez/images/light/sm_logo.svg' %}">
+                    <img class="logo-image" src="{% static '/playez/images/light/lg_logo.svg' %}" alt="Playez">
+                </picture>
+            </div>
+            <div class="header-links">
+                <a target="_blank" href="/create">Create</a>
+            </div>
             {% block header %}
             {% endblock %}
-        </header>
+        </div>
         {% block body %}
         {% endblock %}
     </body>
