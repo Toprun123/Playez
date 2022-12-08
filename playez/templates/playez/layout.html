@@ -11,20 +11,49 @@
     <body>
         <div class="header">
             <div class="header-logo">
-                <picture>
-                    <source media="(prefers-color-scheme: dark) and (min-width: 800px)" srcset="{% static '/playez/images/dark/lg_logo.svg' %}">
-                    <source media="(prefers-color-scheme: dark) and (max-width: 800px)" srcset="{% static '/playez/images/dark/sm_logo.svg' %}">
-                    <source media="(prefers-color-scheme: light) and (min-width: 800px)" srcset="{% static '/playez/images/light/lg_logo.svg' %}">
-                    <source media="(prefers-color-scheme: light) and (max-width: 800px)" srcset="{% static '/playez/images/light/sm_logo.svg' %}">
-                    <img class="logo-image" src="{% static '/playez/images/light/lg_logo.svg' %}" alt="Playez">
-                </picture>
+                <a href="/">
+                    <picture>
+                        <source media="(prefers-color-scheme: dark) and (min-width: 800px)" srcset="{% static '/playez/images/dark/lg_logo.svg' %}">
+                        <source media="(prefers-color-scheme: dark) and (max-width: 800px)" srcset="{% static '/playez/images/dark/sm_logo.svg' %}">
+                        <source media="(prefers-color-scheme: light) and (min-width: 800px)" srcset="{% static '/playez/images/light/lg_logo.svg' %}">
+                        <source media="(prefers-color-scheme: light) and (max-width: 800px)" srcset="{% static '/playez/images/light/sm_logo.svg' %}">
+                        <img class="logo-image" src="{% static '/playez/images/light/lg_logo.svg' %}" alt="Playez">
+                    </picture>
+                </a>
+            </div>
+            <div class="header-search-container">
+                <input type="text" class="header-search-input">&nbsp;
+                <button class="header-search-submit-btn">
+                    <picture>
+                        <source media="(prefers-color-scheme: light)" srcset="{% static '/playez/images/light/search.svg' %}">
+                        <source media="(prefers-color-scheme: dark)" srcset="{% static '/playez/images/dark/search.svg' %}">
+                        <img class="header-search-submit_btn-img" src="{% static '/playez/images/light/search.svg' %}" alt="🔍">
+                    </picture>
+                </button>
             </div>
             <div class="header-links">
-                <a target="_blank" href="/create">Create</a>
+                {% if user.is_authenticated %}
+                    <div class="header-link-card">
+                        <a href="/create" class="header-link">Create</a>
+                        <span class="header-link-underline"></span>
+                    </div>
+                    <div class="header-link-card">
+                        <a href="/logout" class="header-link">Logout</a>
+                        <span class="header-link-underline"></span>
+                    </div>
+                {% else %}
+                    <div class="header-link-card">
+                        <a href="/login" class="header-link">Login</a>
+                        <span class="header-link-underline"></span>
+                    </div>
+                    <div class="header-link-card">
+                        <a href="/register" class="header-link">Register</a>
+                        <span class="header-link-underline"></span>
+                    </div>
+                {% endif %}
             </div>
-            {% block header %}
-            {% endblock %}
         </div>
+        <span class="header-space"></span>
         {% block body %}
         {% endblock %}
     </body>

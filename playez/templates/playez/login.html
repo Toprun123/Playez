@@ -1,0 +1,18 @@
+{% extends "playez/layout.html" %}
+{% load static %}
+
+{% block title %}Login - Playez{% endblock %}
+
+{% block body %}
+    <div class="main">
+        <span class="error_message">{{ message }}</span>
+        <div class="center">
+            <form method="post" class="form">
+                <span class="form-title">Login at Playez</span>
+                {% csrf_token %}
+                {{ login_form }}
+                <button type="submit" class="form-submit-btn">Login</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

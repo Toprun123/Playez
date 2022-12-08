@@ -1,0 +1,8 @@
+<table class="form-table">
+    {% for field in form %}
+        <tr class="form-field">
+            <td class="form-field-title">{{ field.label_tag }}</td>
+            <td class="form-field-input">{{ field }}</td>
+        </tr>
+    {% endfor %}
+</table>

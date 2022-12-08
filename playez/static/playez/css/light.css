@@ -3,10 +3,36 @@
 @media (prefers-color-scheme: light){
     body {
         background-color: var(--bg-light);
-        color: var(--primary-light);
+        color: #000000;
+    }
+
+    a {
+        color: var(--suplimentary-light-1);
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: var(--suplimentary-light-2);
+        text-decoration: underline;
     }
 
     .header {
         background-color: var(--secondary-light);
+    }
+
+    .form-input:focus-visible {
+        outline: none;
+        border: 1px solid var(--suplimentary-light-1);
+    }
+
+    .form-title {
+        color: #ffffff;
+        background-color: var(--primary-light);
+        border-bottom: 1px solid #bdbdbd;
+    }
+
+    .form-submit-btn {
+        color: #ffffff;
+        background-color: var(--primary-light);
     }
 }
