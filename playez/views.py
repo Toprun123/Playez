@@ -72,15 +72,15 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
+        # user = authenticate(request, username=username, password=password)
+        '''if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "playez/login.html", {
                 "message": "Invalid username and/or password.",
                 "login_form": login_form
-            })
+            })'''
+        return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "playez/login.html", {
             "login_form": login_form
@@ -104,17 +104,24 @@ def register_view(request):
                 "register_form": register_form
             })
         try:
-            user = User.objects.create_user(username, email, password)
-            user.save()
+           # user = User.objects.create_user(username, email, password)
+           # user.save()
+           pass
         except IntegrityError as e:
             print(e)
             return render(request, "playez/register.html", {
                 "message": "Username address already taken.",
                 "register_form": register_form
             })
-        login(request, user)
+        #login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "playez/register.html", {
             "register_form": register_form
         })
+
+def test_view(request):
+    return render(request, "playez/h_test_2.html")
+
+def test_view2(request):
+    return render(request, "playez/h_test.html")

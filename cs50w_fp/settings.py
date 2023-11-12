@@ -23,7 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$clll41qz2jevalf!(f+%pbr-sj!-%89e@(a6&z^^u$i$(l!14'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
+
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type("application/javascript", ".js", True)
 
 ALLOWED_HOSTS = ['*']
 
@@ -70,7 +74,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cs50w_fp.wsgi.application'
 
-AUTH_USER_MODEL = "playez.User"
+# AUTH_USER_MODEL = "playez.User"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
