@@ -1,5 +1,0 @@
-h_*
-migrations
-__pycache__
-playez/static/admin
-db.sqlite3
