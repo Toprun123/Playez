@@ -121,7 +121,7 @@ def register_view(request):
         })
 
 def test_view(request):
-    return render(request, "playez/h_test_2.html")
+    return render(request, "playez/test_2.html")
 
 def test_view2(request):
-    return render(request, "playez/h_test.html")
+    return render(request, "playez/test.html")
