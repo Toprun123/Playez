@@ -8,6 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
 
 class RegisterForm(forms.Form):
     template_name = 'playez/form_snippet.html'
@@ -72,14 +73,14 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
-        # user = authenticate(request, username=username, password=password)
-        '''if user is not None:
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
             login(request, user)
         else:
             return render(request, "playez/login.html", {
                 "message": "Invalid username and/or password.",
                 "login_form": login_form
-            })'''
+            })
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "playez/login.html", {
@@ -104,16 +105,15 @@ def register_view(request):
                 "register_form": register_form
             })
         try:
-           # user = User.objects.create_user(username, email, password)
-           # user.save()
-           pass
+           user = User.objects.create_user(username, email, password)
+           user.save()
         except IntegrityError as e:
             print(e)
             return render(request, "playez/register.html", {
                 "message": "Username address already taken.",
                 "register_form": register_form
             })
-        #login(request, user)
+        login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "playez/register.html", {
@@ -121,7 +121,29 @@ def register_view(request):
         })
 
 def test_view(request):
-    return render(request, "playez/test_2.html")
-
-def test_view2(request):
     return render(request, "playez/test.html")
+
+def gamepi(request):
+    if request.method == "POST":
+        if request.POST.get("type") == "new_game":
+            game = Game.objects.create()
+            game.players.add(request.user)
+            return HttpResponse(str(game.id))
+        elif request.POST.get("type") == "join_game":
+            game = Game.objects.get(id=request.POST["game_id"])
+            game.players.add(request.user)
+            return HttpResponse(str(game.id))
+        elif request.POST.get("type") == "leave_game":
+            game = Game.objects.get(id=request.POST["game_id"])
+            game.players.remove(request.user)
+            return HttpResponse(str(game.id))
+        elif request.POST.get("type") == "delete_game":
+            game = Game.objects.get(id=request.POST["game_id"])
+            game.delete()
+            return HttpResponse(str(game.id))
+        else:
+            return HttpResponse("hello")
+    else:
+        response = render(request, "playez/error.html")
+        response.status_code = 404
+        return response
