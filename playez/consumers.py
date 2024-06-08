@@ -18,17 +18,14 @@ class Playez3DGameConsumer(AsyncWebsocketConsumer):
         await self.join_player()
         self.background_task = asyncio.create_task(self.handle_game_loop())
 
-    async def disconnect(self, close_code):
-        print(close_code)
+    async def disconnect(self, _):
         await self.leave_player()
         if hasattr(self, 'background_task'):
             self.background_task.cancel()
             await self.background_task
 
     async def receive(self, text_data):
-        user = self.scope['user']
-        id = self.scope['url_route']['kwargs']['game_id']
-        await self.save_game_state({ "user": user, "id": id, "data": text_data })
+        await self.save_game_state(text_data)
 
     @database_sync_to_async
     def join_player(self):
@@ -42,11 +39,9 @@ class Playez3DGameConsumer(AsyncWebsocketConsumer):
         player.delete()
 
     @database_sync_to_async
-    def save_game_state(self, message):
-        # Save or update game state
+    def save_game_state(self, data):
         PlayerModel = apps.get_model('playez', 'Player')
-        player = PlayerModel.objects.get(user=message['user'])
-        data = json.loads(message['data'])
+        player = PlayerModel.objects.get(user=self.scope['user'])
         player.position = data['position']
         player.rotation = data['rotation']
         player.skin = data['skin']
@@ -55,8 +50,8 @@ class Playez3DGameConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_game_state(self):
         GameModel = apps.get_model('playez', 'Game')
-        game = GameModel.objects.get(id=self.scope['url_route']['kwargs']['game_id'])
         PlayerModel = apps.get_model('playez', 'Player')
+        game = GameModel.objects.get(id=self.scope['url_route']['kwargs']['game_id'])
         players = PlayerModel.objects.filter(game=game)
         final = {}
         for player in players:

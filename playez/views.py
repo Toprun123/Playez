@@ -121,51 +121,5 @@ def register_view(request):
             "register_form": register_form
         })
 
-def test_view(request):
-    return render(request, "playez/test.html")
-
-def gamepi(request):
-    body = json.loads(request.body.decode('utf-8'))
-    if request.method == "POST":
-        try:
-            if body.get("type") == "new":
-                game = Game.objects.create()
-                game.join_game(user=request.user, position='Forward')
-                return HttpResponse(str(game.id))
-            elif body.get("type") == "update":
-                game = Game.objects.get(id=body.get("game_id"))
-                player = Player.objects.get(user=request.user)
-                player.position = json.dumps(body.get("data"), separators=(',', ':'))
-                player.save()
-                return HttpResponse(str(game.id))
-            elif body.get("type") == "redate":
-                game = Game.objects.get(id=body.get("game_id"))
-                players = Player.objects.filter(game=game)
-                final = {}
-                for player in players:
-                    if request.user != player.user:
-                        final[player.user.username]=player.position
-                return JsonResponse(final)
-            elif body.get("type") == "join":
-                game = Game.objects.get(id=body.get("game_id"))
-                game.join_game(user=request.user, position='{}')
-                return HttpResponse(str(game.id))
-            elif body.get("type") == "leave":
-                player = Player.objects.get(user=request.user)
-                player.delete()
-                return HttpResponse(str("Left Game"))
-            elif body.get("type") == "delete":
-                game = Game.objects.get(id=body.get("game_id"))
-                game.delete()
-                return HttpResponse(str(game.id))
-            else:
-                return HttpResponse("hello")
-        except Exception as e:
-            print(e)
-            response = render(request, "playez/error.html")
-            response.status_code = 404
-            return response
-    else:
-        response = render(request, "playez/error.html")
-        response.status_code = 404
-        return response
+def playez_3d_game_view(request):
+    return render(request, "playez/playez_3d_game.html")
