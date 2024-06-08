@@ -1,3 +1,4 @@
+import json
 import re
 from .models import *
 from django import forms
@@ -6,7 +7,7 @@ from django.shortcuts import render
 from django.db import IntegrityError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 
@@ -99,7 +100,7 @@ def register_view(request):
                 "message": "Passwords must match.",
                 "register_form": register_form
             })
-        if not re.match('^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$', password):
+        if not re.match('^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{8,}$', password):
             return render(request, "playez/register.html", {
                 "message": "Password must contain at least eight characters, at least one number and one letter.",
                 "register_form": register_form
@@ -124,25 +125,46 @@ def test_view(request):
     return render(request, "playez/test.html")
 
 def gamepi(request):
+    body = json.loads(request.body.decode('utf-8'))
     if request.method == "POST":
-        if request.POST.get("type") == "new_game":
-            game = Game.objects.create()
-            game.players.add(request.user)
-            return HttpResponse(str(game.id))
-        elif request.POST.get("type") == "join_game":
-            game = Game.objects.get(id=request.POST["game_id"])
-            game.players.add(request.user)
-            return HttpResponse(str(game.id))
-        elif request.POST.get("type") == "leave_game":
-            game = Game.objects.get(id=request.POST["game_id"])
-            game.players.remove(request.user)
-            return HttpResponse(str(game.id))
-        elif request.POST.get("type") == "delete_game":
-            game = Game.objects.get(id=request.POST["game_id"])
-            game.delete()
-            return HttpResponse(str(game.id))
-        else:
-            return HttpResponse("hello")
+        try:
+            if body.get("type") == "new":
+                game = Game.objects.create()
+                game.join_game(user=request.user, position='Forward')
+                return HttpResponse(str(game.id))
+            elif body.get("type") == "update":
+                game = Game.objects.get(id=body.get("game_id"))
+                player = Player.objects.get(user=request.user)
+                player.position = json.dumps(body.get("data"), separators=(',', ':'))
+                player.save()
+                return HttpResponse(str(game.id))
+            elif body.get("type") == "redate":
+                game = Game.objects.get(id=body.get("game_id"))
+                players = Player.objects.filter(game=game)
+                final = {}
+                for player in players:
+                    if request.user != player.user:
+                        final[player.user.username]=player.position
+                return JsonResponse(final)
+            elif body.get("type") == "join":
+                game = Game.objects.get(id=body.get("game_id"))
+                game.join_game(user=request.user, position='{}')
+                return HttpResponse(str(game.id))
+            elif body.get("type") == "leave":
+                player = Player.objects.get(user=request.user)
+                player.delete()
+                return HttpResponse(str("Left Game"))
+            elif body.get("type") == "delete":
+                game = Game.objects.get(id=body.get("game_id"))
+                game.delete()
+                return HttpResponse(str(game.id))
+            else:
+                return HttpResponse("hello")
+        except Exception as e:
+            print(e)
+            response = render(request, "playez/error.html")
+            response.status_code = 404
+            return response
     else:
         response = render(request, "playez/error.html")
         response.status_code = 404

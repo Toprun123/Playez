@@ -2,6 +2,6 @@ h_*
 migrations
 playez/static/admin
 db.sqlite3
-venv
+.venv
 __*__*
 .vscode

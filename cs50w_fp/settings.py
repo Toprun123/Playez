@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'playez'
 ]
 
@@ -73,6 +74,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'cs50w_fp.wsgi.application'
+
+ASGI_APPLICATION = 'your_project_name.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 AUTH_USER_MODEL = "playez.User"
 

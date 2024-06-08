@@ -1,4 +1,6 @@
-# todos
+# BootStrapppppp!!!!!
+
+## todos
 
 - [X] Create logo small - ligt, dark
 - [X] Create logo large - ligt, dark
@@ -8,11 +10,11 @@
 - [X] Create db
 - [ ] Create basic styling
 
-# Features to make
+## Features to make
 
 - [ ] some features
 
-# Models
+## Models
 
 | Model name | Usage                      | Number of fields                    | Made? |
 | :--------- | :------------------------- | :---------------------------------- | :---- |

@@ -1,0 +1,155 @@
+{
+    "players": {
+        "alex": {
+            "Body": [
+                "0e747425-5241-f675-6036-b0aa13de4ecf",
+                "4a9fe2a6-444d-cc37-d7bd-d5737f255849",
+                "681b2a1d-8c38-87ff-193c-01bb318905ef",
+                "8b32a347-2606-3e48-02c4-76003e593818",
+                "8c268700-5a42-0618-03c4-b214484beaf2",
+                "9eb2e12c-3a94-8d0d-bb79-334c06a92abb",
+                "b8177f39-221e-2ace-9b4f-5c6b175fc77c",
+                "d2fa588a-57aa-1c90-7e9f-e28966a5eb69",
+                "f5f02bc4-c98d-0b32-b626-6c9e33b38a70"
+            ],
+            "Head": [
+                "31c82a66-8932-ba99-57d7-29d2987d17ce",
+                "3640273e-c3a9-7867-fa9f-c94236976868",
+                "42456269-f817-0ddc-4b4a-84f57b10757c",
+                "5d43a7f9-6afb-b98f-774a-3fc190fad56e",
+                "6d5d3ab4-b639-db0d-3ce8-e8e0abb0242d",
+                "b9203b5f-e7db-5a95-f7d0-c2a4eec6fb17",
+                "b949c6ec-6012-2790-bada-d1ff78e0fe94"
+            ],
+            "LeftArm": [
+                "772f5163-aa46-6566-85e7-00c3ec7ccd10",
+                "c8deb01a-d346-31fa-dce1-efe2e2353e54",
+                "febbdc6f-c319-df66-e904-29ee75adb0af"
+            ],
+            "RightArm": [
+                "6b91fff2-da84-201f-cace-3af94450e740",
+                "ac4ebe29-7a3c-0c8b-1e68-22ea6c7c1854",
+                "f87590a8-b53f-ff5b-03d5-840cecc2ea3a"
+            ],
+            "LeftLeg": [
+                "19662181-7f60-db10-68e3-01bfa6df6543",
+                "61121600-e5ab-06f9-f763-b80984b3c3f2",
+                "79f3219e-d7dd-b032-3402-f3d0cca80bdf"
+            ],
+            "RightLeg": [
+                "08261186-0acb-e0d3-991f-9da8550a9f24",
+                "305d3f82-a93f-a098-d751-63620ad87b81",
+                "aff603d8-d052-a0e3-e83e-9d156d7d9e27"
+            ]
+        },
+        "dodel": {
+            "Body": [
+                "2238fed7-087f-155b-28e7-59dd1b8e4b29",
+                "6abed4d6-af47-4347-53d6-5e72327a45ed"
+            ],
+            "Head": [
+                "1039757e-1d6e-02c9-4e4c-5a41f68b6484",
+                "1fde62c9-7413-4a90-f3eb-b14923fd32c8"
+            ],
+            "LeftArm": [
+                "1e5c1c56-8440-bb35-1792-ce2d1e42ddfb",
+                "67073798-a643-b308-cca5-203070ce8874"
+            ],
+            "RightArm": [
+                "82f7cfae-790a-9852-7c56-5851d7f03980",
+                "ba969546-b803-3ef6-8540-df23e194d30b"
+            ],
+            "LeftLeg": [
+                "dfe38fd6-db74-6e58-ad4d-223a17129fe9",
+                "f2408c48-19ba-5b99-debc-ff1d537768d5"
+            ],
+            "RightLeg": [
+                "093f2855-8554-d964-4ef0-61dfcca90bec",
+                "89bf2d4e-5a66-3e1c-2604-9e45026c9074"
+            ]
+        },
+        "mcdonald": {
+            "Body": [
+                "Body",
+                "Body Layer"
+            ],
+            "Head": [
+                "Hat Layer",
+                "Head"
+            ],
+            "LeftArm": [
+                "Left Arm",
+                "Left Arm Layer"
+            ],
+            "RightArm": [
+                "Right Arm",
+                "Right Arm Layer"
+            ],
+            "LeftLeg": [
+                "Left Leg",
+                "Left Leg Layer"
+            ],
+            "RightLeg": [
+                "Right Leg",
+                "Right Leg Layer"
+            ]
+        },
+        "steve": {
+            "Body": [
+                "30cd5dd4-2699-080d-150b-9ba16cee1f15",
+                "a2b44476-f503-a66c-1012-e8d39439321d"
+            ],
+            "Head": [
+                "9a9c1e5c-5c1f-c0cd-1fc3-cfa7ab6e7d4d",
+                "aaf26cb3-200b-6c08-6a10-6140091b7548"
+            ],
+            "LeftArm": [
+                "a2a0bf8c-0001-3a1e-3428-05171c13ba86",
+                "d941eb4f-38e9-ec1d-4e7d-7b4b73e1b760"
+            ],
+            "RightArm": [
+                "5729eae5-54d8-d259-4bf7-835b3a3cf6f6",
+                "cd0fa1f0-87b9-fa01-3500-1184048ef821"
+            ],
+            "LeftLeg": [
+                "08e9b2f8-6d48-6899-4aab-f9ad2f54962c",
+                "989dd4a2-775c-a557-3a07-114311670fd0"
+            ],
+            "RightLeg": [
+                "8819147f-2ca4-11e0-218c-e72e5eab8834",
+                "a0db94fb-cb5b-15dd-5412-3783502f103f"
+            ]
+        },
+        "jaz": {
+            "Body": [
+                "Body",
+                "Body Layer"
+            ],
+            "Head": [
+                "Hat Layer",
+                "Head"
+            ],
+            "LeftArm": [
+                "Left Arm",
+                "Left Arm Layer"
+            ],
+            "RightArm": [
+                "Right Arm",
+                "Right Arm Layer"
+            ],
+            "LeftLeg": [
+                "Left Leg",
+                "Left Leg Layer"
+            ],
+            "RightLeg": [
+                "Right Leg",
+                "Right Leg Layer"
+            ]
+        }
+    },
+    "weapons": {
+        "gun": {
+            "main": ["Object_2", "Object_3"]
+        }
+    }
+}
