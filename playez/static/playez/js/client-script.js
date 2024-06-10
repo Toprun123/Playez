@@ -10,10 +10,20 @@ Math.map = (n, min, max, omin, omax)=>(n-min)*(omax-omin)/(max-min)+omin;
 const models_info = JSON.parse(await (await fetch('static/playez/json/models_info.json')).text());
 const minInterval = 100;
 
-async function loadModel(folder, type, scene) {
+async function loadPlayerModel(type, scene) {
     return new Promise((resolve, reject) => {
         BABYLON.SceneLoader.Append(
-            "static/playez/3d_models/"+folder+"/"+type+"/", "scene.gltf",
+            "static/playez/3d_models/player/"+type+"/", "scene.gltf",
+            scene, loadedScene => resolve(loadedScene), null,
+            (_, message, exception) => reject(exception || new Error(message))
+        );
+    });
+}
+
+async function loadWeapons(scene) {
+    return new Promise((resolve, reject) => {
+        BABYLON.SceneLoader.Append(
+            "static/playez/3d_models/weapons/", "final.glb",
             scene, loadedScene => resolve(loadedScene), null,
             (_, message, exception) => reject(exception || new Error(message))
         );
@@ -27,16 +37,24 @@ function clearRoot(scene) {
 
 async function loadWeapon(weapon, scene) {
     // Remove existing gun "Gun" if exists
-    var gunNode = scene.getMeshByName("Gun");
-    if (gunNode) gunNode.dispose();
-    var gunScene = await loadModel("weapons", weapon, scene);
-    var gunMeshes = models_info["weapons"][weapon]["meshes"].map(e => gunScene.getMeshByName(e));
-    var gun = BABYLON.Mesh.MergeMeshes(gunMeshes);
-    gunMeshes.forEach(mesh => mesh.dispose());
+    var gunNode = scene.activeCamera.getChildren();
+    if (gunNode.length>0) gunNode.forEach(c=>c.dispose());
+    await loadWeapons(scene);
+    var gunMeshes = scene.getMeshByName("__root__").getChildren().find(c=>c.name==weapon).getChildren();
+    if (weapon[1] == "o") { // "Rocket_launcher"
+        var rocketNodes = scene.getMeshByName("__root__").getChildren().find(c=>c.name=="Rocket").getChildren();
+        var rocket = new BABYLON.TransformNode("Rocket", scene);
+        rocketNodes.forEach(node => node.parent = rocket);
+        rocket.parent = scene.activeCamera;
+        rocket.scaling = new BABYLON.Vector3(...models_info["weapons"][weapon]["scaling"]);
+        rocket.position = new BABYLON.Vector3(...models_info["weapons"][weapon]["position"]);
+        rocket.rotation = new BABYLON.Vector3(...(models_info["weapons"][weapon]["rotation"].map(Math.degToRad)));
+    }
+    var gun = new BABYLON.TransformNode("Gun", scene);
+    gunMeshes.forEach(mesh => mesh.parent = gun);
     gun.parent = scene.activeCamera;
-    gun.name = "Gun";
-    gun.position = new BABYLON.Vector3(...models_info["weapons"][weapon]["position"]);
     gun.scaling = new BABYLON.Vector3(...models_info["weapons"][weapon]["scaling"]);
+    gun.position = new BABYLON.Vector3(...models_info["weapons"][weapon]["position"]);
     gun.rotation = new BABYLON.Vector3(...(models_info["weapons"][weapon]["rotation"].map(Math.degToRad)));
     clearRoot(scene);
 }
@@ -100,6 +118,10 @@ var createScene = async () => {
     // Enable Physics Engine
     var cannonPlugin = new BABYLON.CannonJSPlugin();
     scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), cannonPlugin);
+    var hdrTexture = new BABYLON.CubeTexture.CreateFromPrefilteredData("static/playez/3d_models/sky-16bit-512.dds", scene);
+    scene.environmentTexture = hdrTexture;
+    // Optional: Adjust the environment texture intensity
+    scene.environmentIntensity = 1.0;
     // Ground
     var ground = BABYLON.Mesh.CreateGround("ground", 1000, 1000, 1, scene);
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.PlaneImpostor, { mass: 0, restitution: 0 }, scene);
@@ -134,8 +156,8 @@ var createScene = async () => {
     // Constrain rotations
     playerBody.visibility = 0;
     playerBody.physicsImpostor.executeNativeFunction((_, body) => {
-            body.fixedRotation = true;
-            body.updateMassProperties();
+        body.fixedRotation = true;
+        body.updateMassProperties();
     });
     playerBody.position.y = 25;
     playerBody.position.x = -5;
@@ -156,7 +178,7 @@ var createScene = async () => {
     const keysPressed = {};
     var jumpImpulse = new BABYLON.Vector3(0, 100, 0);
     canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
-    menu.addEventListener("click", e => { if (canvas.requestPointerLock && !e.target.matches('.exclude')) canvas.requestPointerLock(); });
+    menu.addEventListener("click", e => { if (!e.target.matches('.exclude')) canvas.requestPointerLock(); });
     document.addEventListener("pointerlockchange", _ => {
         pointerLocked = (document.pointerLockElement == canvas || document.mozPointerLockElement == canvas || document.webkitPointerLockElement == canvas);
         if (pointerLocked) menu.style.animation = 'out 0.25s forwards';
@@ -181,13 +203,15 @@ var createScene = async () => {
         code = document.getElementById("code_input").value;
         skin = document.getElementById("skin_input").value;
         weapon = document.getElementById("weapon_input").value;
+        if (socket && socket.readyState == WebSocket.OPEN) socket.close();
+        loadWeapon(weapon, scene);
         socket = new WebSocket('ws://'+window.location.host+'/ws/playez3dgame/'+code+'/');
         socket.onmessage = async e => {
             var received_data = JSON.parse(e.data);
             for (const [player_name, data] of Object.entries(received_data)) {
                 if (!players[player_name]) {
                     if (data.skin != "") {
-                        var model = await loadModel("player", data.skin, scene);
+                        var model = await loadPlayerModel(data.skin, scene);
                         players[player_name] = new BABYLON.TransformNode(player_name, scene);
                         for (const [part_name, ids] of Object.entries(models_info["players"][data.skin])) {
                             var meshes = ids.map(id => model.getMeshByName(id));

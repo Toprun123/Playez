@@ -148,11 +148,35 @@
         }
     },
     "weapons": {
-        "Hand-gun": {
-            "meshes": ["Object_2", "Object_3"],
-            "scaling": [0.5, 0.5, 0.5],
+        "Pistol": {
+            "scaling": [0.0003, 0.0003, 0.0003],
+            "position": [0.8, -0.37, 1.8],
+            "rotation": [-90, 170, 0]
+        },
+        "Rifle": {
+            "scaling": [0.0003, 0.0007, 0.0007],
+            "position": [0.8, -0.4, 2],
+            "rotation": [0, 175, 0]
+        },
+        "SubMachine": {
+            "scaling": [0.0003, 0.001, 0.001],
             "position": [0.8, -0.4, 2],
             "rotation": [0, 170, 0]
+        },
+        "Machine": {
+            "scaling": [0.001, 0.0001, 0.001],
+            "position": [0, -0.52, 1.06],
+            "rotation": [-75, 180, 0]
+        },
+        "Rocket_launcher": {
+            "scaling": [0.001, 0.001, 0.001],
+            "position": [1, -0.3, 2],
+            "rotation": [-90, 176, 0]
+        },
+        "Sniper": {
+            "scaling": [0.0004, 0.0004, 0.0004],
+            "position": [0.8, -0.4, 2.1],
+            "rotation": [-90, 180, 0]
         }
     }
 }
