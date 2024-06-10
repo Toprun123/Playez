@@ -74,8 +74,8 @@
         <script>
             var csrf_token = "{{ csrf_token }}";
             var code = 0;
-            var skin = 'mcdonald';
-            var weapon = "gun";
+            var skin = "";
+            var weapon = "Hand-gun";
         </script>
         <meta name="csrf-token" content="{{ csrf_token }}">
     </head>
@@ -86,10 +86,10 @@
                     Click to play
                 </p>
                 <label for="">Username:</label>
-                <input id="skin_input" type="text" placeholder="Enter skin name" class="exclude" value="mcdonald">
-                <input id="weapon_input" type="text" placeholder="Enter weapon name" class="exclude" value="gun">
+                <input id="skin_input" type="text" placeholder="Enter skin name" class="exclude" value="Astro">
+                <input id="weapon_input" type="text" placeholder="Enter weapon name" class="exclude" value="Hand-gun">
                 <input id="code_input" type="text" placeholder="Enter Game Code" class="exclude" value="111">
-                <input type="button" value="Join" class="exclude" id="join_btn"><br/>
+                <input type="button" value="Join" class="exclude" id="join_btn"><br/><br/>
                 <input type="button" value="Create" class="exclude" id="create_btn">
                 <input type="button" value="Show Debugger" class="exclude" id="debugger"><br/>
                 <p>

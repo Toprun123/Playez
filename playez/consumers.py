@@ -42,6 +42,7 @@ class Playez3DGameConsumer(AsyncWebsocketConsumer):
     def save_game_state(self, data):
         PlayerModel = apps.get_model('playez', 'Player')
         player = PlayerModel.objects.get(user=self.scope['user'])
+        data = json.loads(data)
         player.position = data['position']
         player.rotation = data['rotation']
         player.skin = data['skin']

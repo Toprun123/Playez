@@ -1,6 +1,6 @@
 {
     "players": {
-        "alex": {
+        "Alex": {
             "Body": [
                 "0e747425-5241-f675-6036-b0aa13de4ecf",
                 "4a9fe2a6-444d-cc37-d7bd-d5737f255849",
@@ -42,7 +42,7 @@
                 "aff603d8-d052-a0e3-e83e-9d156d7d9e27"
             ]
         },
-        "dodel": {
+        "Dodel": {
             "Body": [
                 "2238fed7-087f-155b-28e7-59dd1b8e4b29",
                 "6abed4d6-af47-4347-53d6-5e72327a45ed"
@@ -68,7 +68,7 @@
                 "89bf2d4e-5a66-3e1c-2604-9e45026c9074"
             ]
         },
-        "mcdonald": {
+        "McDonald": {
             "Body": [
                 "Body",
                 "Body Layer"
@@ -94,7 +94,7 @@
                 "Right Leg Layer"
             ]
         },
-        "steve": {
+        "Astro": {
             "Body": [
                 "30cd5dd4-2699-080d-150b-9ba16cee1f15",
                 "a2b44476-f503-a66c-1012-e8d39439321d"
@@ -120,7 +120,7 @@
                 "a0db94fb-cb5b-15dd-5412-3783502f103f"
             ]
         },
-        "jaz": {
+        "Jazz": {
             "Body": [
                 "Body",
                 "Body Layer"
@@ -148,8 +148,11 @@
         }
     },
     "weapons": {
-        "gun": {
-            "main": ["Object_2", "Object_3"]
+        "Hand-gun": {
+            "meshes": ["Object_2", "Object_3"],
+            "scaling": [0.5, 0.5, 0.5],
+            "position": [0.8, -0.4, 2],
+            "rotation": [0, 170, 0]
         }
     }
 }

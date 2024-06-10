@@ -3,8 +3,12 @@ import * as TWEEN from 'tween';
 var canvas = document.getElementById("canvas");
 var engine = new BABYLON.Engine(canvas, true);
 
-Math.degrees = r => r * 180 / Math.PI;
-Math.radians = d => d * Math.PI / 180;
+Math.radToDeg = r => r * 180 / Math.PI;
+Math.degToRad = d => d * Math.PI / 180;
+Math.map = (n, min, max, omin, omax)=>(n-min)*(omax-omin)/(max-min)+omin;
+
+const models_info = JSON.parse(await (await fetch('static/playez/json/models_info.json')).text());
+const minInterval = 100;
 
 async function loadModel(folder, type, scene) {
     return new Promise((resolve, reject) => {
@@ -17,8 +21,77 @@ async function loadModel(folder, type, scene) {
 }
 
 function clearRoot(scene) {
-    let rootNode = scene.getMeshByName("__root__");
+    var rootNode = scene.getMeshByName("__root__");
     if (rootNode) rootNode.dispose();
+}
+
+async function loadWeapon(weapon, scene) {
+    // Remove existing gun "Gun" if exists
+    var gunNode = scene.getMeshByName("Gun");
+    if (gunNode) gunNode.dispose();
+    var gunScene = await loadModel("weapons", weapon, scene);
+    var gunMeshes = models_info["weapons"][weapon]["meshes"].map(e => gunScene.getMeshByName(e));
+    var gun = BABYLON.Mesh.MergeMeshes(gunMeshes);
+    gunMeshes.forEach(mesh => mesh.dispose());
+    gun.parent = scene.activeCamera;
+    gun.name = "Gun";
+    gun.position = new BABYLON.Vector3(...models_info["weapons"][weapon]["position"]);
+    gun.scaling = new BABYLON.Vector3(...models_info["weapons"][weapon]["scaling"]);
+    gun.rotation = new BABYLON.Vector3(...(models_info["weapons"][weapon]["rotation"].map(Math.degToRad)));
+    clearRoot(scene);
+}
+
+var rotationAngle = Math.degToRad(75);
+var animationCount = 0;
+
+function moveToPosition(model, pos) {
+    if (Math.abs(model.position.x - pos.x) > 0.2 || Math.abs(model.position.z - pos.z) > 0.2) animateLimbs(model);
+    else stopLimbs(model);
+    new TWEEN.Tween(model.position)
+        .to({ x: pos.x, y: pos.y+0.35, z: pos.z }, 100)
+        .easing(TWEEN.Easing.Linear.None).start();
+}
+
+function stopLimbs(model) {
+    new TWEEN.Tween(model.getChildren().find(c=>c.name=="LeftLeg").rotation)
+        .to({ x: 0, z: Math.degToRad(4) }, minInterval)
+        .easing(TWEEN.Easing.Linear.None)
+        .start();
+    new TWEEN.Tween(model.getChildren().find(c=>c.name=="RightLeg").rotation)
+        .to({ x: 0, z: Math.degToRad(-4) }, minInterval)
+        .easing(TWEEN.Easing.Linear.None)
+        .start();
+    new TWEEN.Tween(model.getChildren().find(c=>c.name=="RightArm").rotation)
+        .to({ x: 0, z: Math.degToRad(-4) }, minInterval*2)
+        .easing(TWEEN.Easing.Linear.None)
+        .start();
+    new TWEEN.Tween(model.getChildren().find(c=>c.name=="LeftArm").rotation)
+        .to({ x: 0, z: Math.degToRad(4) }, minInterval*2)
+        .easing(TWEEN.Easing.Linear.None)
+        .start();
+}
+
+function animateLimbs(model) {
+    if (animationCount%2==0) {
+        rotationAngle = -rotationAngle;
+        new TWEEN.Tween(model.getChildren().find(c=>c.name=="LeftLeg").rotation)
+            .to({ x: rotationAngle, y: 0, z: Math.degToRad(4) }, minInterval*2)
+            .easing(TWEEN.Easing.Linear.None)
+            .start();
+        new TWEEN.Tween(model.getChildren().find(c=>c.name=="RightLeg").rotation)
+            .to({ x: -rotationAngle, y: 0, z: Math.degToRad(-4) }, minInterval*2)
+            .easing(TWEEN.Easing.Linear.None)
+            .start();
+        new TWEEN.Tween(model.getChildren().find(c=>c.name=="RightArm").rotation)
+            .to({ x: rotationAngle, y: 0, z: Math.degToRad(-4) }, minInterval*2)
+            .easing(TWEEN.Easing.Linear.None)
+            .start();
+        new TWEEN.Tween(model.getChildren().find(c=>c.name=="LeftArm").rotation)
+            .to({ x: -rotationAngle, y: 0, z: Math.degToRad(4) }, minInterval*2)
+            .easing(TWEEN.Easing.Linear.None)
+            .start();
+    }
+    animationCount++;
 }
 
 // Create a scene
@@ -38,47 +111,37 @@ var createScene = async () => {
     hemisphericLight.specular = new BABYLON.Color3(0, 0, 0); // Set the specular color of the light
     hemisphericLight.groundColor = new BABYLON.Color3(0, 0, 1); // Set the ground color (optional)
     // Ambient Light
-    var ambientLight = new BABYLON.PointLight("ambientLight", new BABYLON.Vector3(0, 0, 0), scene);
+    var ambientLight = new BABYLON.PointLight("ambientLight", new BABYLON.Vector3.Zero(), scene);
     // Set light properties
     ambientLight.diffuse = new BABYLON.Color3(1, 1, 1); // Set the diffuse color of the light
     ambientLight.specular = new BABYLON.Color3(0, 0, 0); // Set the specular color of the light
-    ambientLight.intensity = 0.5;
+    ambientLight.intensity = 12;
     // A box
     var box = BABYLON.Mesh.CreateBox("box", 1, scene);
     var boxMaterial = new BABYLON.StandardMaterial("material", scene);
     boxMaterial.diffuseColor = new BABYLON.Color3.FromHexString("#ff0000");
     box.position.y = 5;
     box.material = boxMaterial
-    box.physicsImpostor = new BABYLON.PhysicsImpostor(box, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 1, restitution: 0.2 }, scene);
+    box.physicsImpostor = new BABYLON.PhysicsImpostor(box, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 1, restitution: 0 }, scene);
     // Create a FreeCamera
-    var camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 0, 0), scene);
+    var camera = new BABYLON.FreeCamera("default_camera", new BABYLON.Vector3.Zero(), scene);
     // Set camera speed
     camera.speed = 0.2;
     // Define Player Body
-    var playerBody = BABYLON.MeshBuilder.CreateCylinder("cylinder", { height: 2, diameter: 0.7 }, scene);
+    var playerBody = BABYLON.MeshBuilder.CreateCylinder("cylinder", { height: 2, diameter: 0.9 }, scene);
     // Create a physics impostor with constraints
     playerBody.physicsImpostor = new BABYLON.PhysicsImpostor(playerBody, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: 15, restitution: 0.3, friction: 0 }, scene);
     // Constrain rotations
-    playerBody.visible = false;
+    playerBody.visibility = 0;
     playerBody.physicsImpostor.executeNativeFunction((_, body) => {
             body.fixedRotation = true;
             body.updateMassProperties();
     });
-    playerBody.position.y = 10;
+    playerBody.position.y = 25;
     playerBody.position.x = -5;
     playerBody.position.z = -5;
     playerBody.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
-    var gunScene = await loadModel("weapons", "gun", scene);
-    var gunMeshes = [gunScene.getMeshByName("Object_2"), gunScene.getMeshByName("Object_3")];
-    var gun = BABYLON.Mesh.MergeMeshes(gunMeshes, true, false, null, false, true);
-    gunMeshes.forEach(mesh => mesh.dispose());
-    gun.parent = camera;
-    gun.position.x = 0.8;
-    gun.position.y = -0.4;
-    gun.position.z = 2;
-    gun.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
-    gun.rotation.y = Math.radians(170);
-    clearRoot(scene);
+    loadWeapon(weapon, scene);
     camera.parent = playerBody;
     camera.position.y = 1.7;
     function isOnGround() {
@@ -112,10 +175,8 @@ var createScene = async () => {
         if (["w", "a", "s", "d"].includes(e.key) && pointerLocked) playerVelocity = BABYLON.Vector3.Zero();
     });
     var socket;
-    var models_info = JSON.parse(await (await fetch('static/playez/js/models_info.json')).text());
     var players = {};
-    const minInterval = 100;
-    let lastUpdated = 0;
+    var lastUpdated = 0;
     document.getElementById('join_btn').addEventListener('click', _ => {
         code = document.getElementById("code_input").value;
         skin = document.getElementById("skin_input").value;
@@ -128,23 +189,55 @@ var createScene = async () => {
                     if (data.skin != "") {
                         var model = await loadModel("player", data.skin, scene);
                         players[player_name] = new BABYLON.TransformNode(player_name, scene);
-                        for (const [bodyPart, ids] of Object.entries(models_info["players"][data.skin])) {
+                        for (const [part_name, ids] of Object.entries(models_info["players"][data.skin])) {
                             var meshes = ids.map(id => model.getMeshByName(id));
-                            var partFinal = new BABYLON.TransformNode(bodyPart, scene);
+                            var partFinal = new BABYLON.TransformNode(part_name, scene);
                             meshes.forEach(mesh => {
-                                var temp_pos = mesh.getAbsolutePosition().clone();
                                 mesh.setParent(partFinal);
-                                mesh.setAbsolutePosition(temp_pos);
+                                mesh.setAbsolutePosition(new BABYLON.Vector3(0, -1, 0));
+                                if (mesh.rotationQuaternion) mesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, 0, Math.degToRad(180));
+                                else mesh.rotation = new BABYLON.Vector3(0, 0, Math.degToRad(180));
                             });
                             partFinal.parent = players[player_name];
                         }
+                        var playerCylinder = BABYLON.MeshBuilder.CreateCylinder("cylinder", { height: 2, diameter: 0.9 }, scene);
+                        playerCylinder.physicsImpostor = new BABYLON.PhysicsImpostor(
+                            playerCylinder,
+                            BABYLON.PhysicsImpostor.CylinderImpostor,
+                            { mass: 0, restitution: 0.3, friction: 0 },
+                            scene
+                        );
+                        playerCylinder.visibility = 0;
+                        players[player_name].scaling = new BABYLON.Vector3(1.55, 1.55, 1.55);
+                        playerCylinder.parent = players[player_name];
                         clearRoot(scene);
+                        var parts = players[player_name].getChildren();
+                        var leftLeg = parts.find(c=>c.name=="LeftLeg");
+                        var rightLeg = parts.find(c=>c.name=="RightLeg");
+                        var legsPivotPoint = new BABYLON.Vector3(0, -0.4, 0);
+                        leftLeg.setPivotPoint(legsPivotPoint);
+                        rightLeg.setPivotPoint(legsPivotPoint);
+                        var armsPivotPoint = new BABYLON.Vector3(0, 0.4, 0);
+                        var leftArm = parts.find(c=>c.name=="LeftArm");
+                        var rightArm = parts.find(c=>c.name=="RightArm");
+                        leftArm.setPivotPoint(armsPivotPoint);
+                        rightArm.setPivotPoint(armsPivotPoint);
+                        leftArm.getChildren().forEach(c=>c.position.x-=0.01);
+                        rightArm.getChildren().forEach(c=>c.position.x+=0.01);
+                        var head = parts.find(c=>c.name=="Head");
+                        var headPivotPoint = new BABYLON.Vector3(0, 0.55, 0);
+                        head.setPivotPoint(headPivotPoint);
                     }
                 } else {
-                    new TWEEN.Tween(players[player_name].position)
-                        .to(data.position, minInterval)
-                        .easing(TWEEN.Easing.Linear.None)
-                        .start();
+                    moveToPosition(players[player_name], data.position);
+                    new TWEEN.Tween(players[player_name].rotation)
+                        .to({ y: Math.degToRad(180)+data.rotation.y }, minInterval)
+                        .easing(TWEEN.Easing.Linear.None).start();
+                    var head = players[player_name].getChildren().find(c=>c.name=="Head");
+                    var headRotation = { x: -Math.degToRad(Math.map(Math.radToDeg(data.rotation.x), -90, 90, -65, 65)) };
+                    new TWEEN.Tween(head.rotation)
+                        .to(headRotation, minInterval)
+                        .easing(TWEEN.Easing.Linear.None).start();
                 }
             }
             Object.keys(players).forEach(player_name => {
@@ -185,13 +278,13 @@ var createScene = async () => {
         if (now - lastUpdated >= minInterval) {
             lastUpdated = now;
             // Send playerdata to server
-            var playerData = {  skin: skin, weapon: weapon,
-                                position: { x: playerBody.position._x,
-                                            y: playerBody.position._y,
-                                            z: playerBody.position._z },
-                                rotation: [ camera.rotation._x,
-                                            camera.rotation._y,
-                                            camera.rotation._z ]};
+            const playerData = {  skin: skin, weapon: weapon,
+                                position: { x: playerBody.position.x,
+                                            y: playerBody.position.y,
+                                            z: playerBody.position.z  },
+                                rotation: { x: camera.rotation.x,
+                                            y: camera.rotation.y,
+                                            z: camera.rotation.z  }   };
             if (socket && socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(playerData));
         }
         TWEEN.update();
